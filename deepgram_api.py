@@ -1,14 +1,21 @@
-key = "d7171a8f79a4d9d2230e31f8741811e78d3d1300"
-
-# main.py (python example)
 
 import os
+from dotenv import load_dotenv
 
 from deepgram import (
     DeepgramClient,
     PrerecordedOptions,
     FileSource,
 )
+# Load environment variables from a .env file
+load_dotenv()
+
+# Retrieve the Deepgram API key from the environment variables
+key = os.getenv("DEEPGRAM_API_KEY")
+
+if not key:
+    raise ValueError("DEEPGRAM_API_KEY is not set in the environment variables.")
+# main.py (python example)
 
 # Path to the audio file
 AUDIO_FILE = "videoplayback.mp3"
@@ -27,7 +34,7 @@ def main():
 
         #STEP 2: Configure Deepgram options for audio analysis
         options = PrerecordedOptions(
-            model="whisper",
+            model="nova-3",
             smart_format=True,
         )
 
