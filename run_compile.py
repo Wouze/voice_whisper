@@ -4,6 +4,10 @@ from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 from tqdm import tqdm
 import time  # Import the time module
 
+import torch._dynamo
+torch._dynamo.config.suppress_errors = True
+
+
 torch.set_float32_matmul_precision("high")
 
 device = "mps"  # or "cuda" for NVIDIA GPUs
@@ -33,18 +37,18 @@ pipe = pipeline(
 
 sample = 'videoplayback.mp3'
 
-# Warm-up steps with timing
-start_time = time.time()
-for _ in tqdm(range(2), desc="Warm-up step"):
-    with sdpa_kernel(SDPBackend.MATH):
-        result = pipe(sample,return_timestamps=True)
-warmup_time = time.time() - start_time
-print(f"Warm-up time: {warmup_time:.2f} seconds")
+# # Warm-up steps with timing
+# start_time = time.time()
+# for _ in tqdm(range(2), desc="Warm-up step"):
+#     with sdpa_kernel(SDPBackend.MATH):
+#         result = pipe(sample,return_timestamps=True)
+# warmup_time = time.time() - start_time
+# print(f"Warm-up time: {warmup_time:.2f} seconds")
 
 # Fast run with timing
 start_time = time.time()
 with sdpa_kernel(SDPBackend.MATH):
-    result = pipe(sample.copy())
+    result = pipe(sample, return_timestamps=True)
 fast_run_time = time.time() - start_time
 print(f"Fast run time: {fast_run_time:.2f} seconds")
 
