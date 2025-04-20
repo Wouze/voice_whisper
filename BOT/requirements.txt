@@ -1,0 +1,5 @@
+python-dotenv==1.0.0
+deepl==1.15.0
+google-generativeai==0.3.2
+ffmpeg-python==0.2.0
+pyTelegramBotAPI==4.15.4 

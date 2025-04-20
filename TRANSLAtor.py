@@ -7,6 +7,8 @@ deepl_api_key = os.getenv('DEEPL_API_KEY')
 
 
 def translate_to_english_deepl(text, target_language='AR'):
+
+    return text
     """
     Translate using DeepL API (requires authentication key)
     """

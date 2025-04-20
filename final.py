@@ -44,7 +44,7 @@ def create_srt_file(subtitle_entries, output_file):
                 
                 # Calculate end time (add 2 seconds)
                 mm_int, ss_int = int(mm), int(ss)
-                ss_int += 2
+                ss_int += 3
                 if ss_int >= 60:
                     mm_int += 1
                     ss_int -= 60
@@ -63,9 +63,7 @@ def burn_subtitles(video_file, subtitle_file, output_file):
             .input(video_file)
             .output(
                 output_file,
-                vf=f"subtitles={subtitle_file}:force_style='FontSize=24,FontName=Arial,PrimaryColour=&H00FFFFFF,OutlineColour=&H000000FF,BackColour=&H80000000,Outline=2,Shadow=1'",
-                codec='copy', 
-                acodec='copy'
+                vf=f"subtitles={subtitle_file}:force_style='FontSize=24,FontName=Ubuntu Arabic,PrimaryColour=&H00FFFFFF,OutlineColour=&H000000FF,BackColour=&H80000000,Outline=2,Shadow=1'"
             )
             .run(overwrite_output=True)
         )
@@ -75,7 +73,7 @@ def burn_subtitles(video_file, subtitle_file, output_file):
 
 def main():
     # Get input video file
-    input_video = input("Enter the path to the input video file: ")
+    input_video = "videos/input.mp4"
     
     # Get transcript text
     transcript_text = """
@@ -148,23 +146,18 @@ def main():
     print("Translating transcript...")
     translated_entries = translate_transcript(subtitle_entries)
     
-    # Create SRT files
-    original_srt = "original_subtitles.srt"
+    # Create SRT file for translated subtitles
     translated_srt = "translated_subtitles.srt"
-    
-    create_srt_file(subtitle_entries, original_srt)
     create_srt_file(translated_entries, translated_srt)
-    
-    # Ask user which subtitle file to use
-    use_translated = input("Do you want to use translated subtitles? (y/n): ").lower() == 'y'
-    subtitle_file = translated_srt if use_translated else original_srt
     
     # Create output file path
     output_video = os.path.splitext(input_video)[0] + "_with_subtitles" + os.path.splitext(input_video)[1]
     
     # Burn subtitles into video
-    print(f"Burning subtitles into video...")
-    burn_subtitles(input_video, subtitle_file, output_video)
+    print(f"Burning translated subtitles into video...")
+    burn_subtitles(input_video, translated_srt, output_video)
+
 
 if __name__ == "__main__":
+    print("Starting...")
     main()
